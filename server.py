@@ -43,10 +43,10 @@ def main():
 	try:
 		server.bind((HOST,PORT))
 		print(f"Server {HOST} listening in {PORT}")
-	except:
+	except Exception as e:
+		print(e)
 		print("Unable to bind to host!")
-		
-	server.listen(50000)
+	server.listen(5)
 	
 	while True:
 		client,address = server.accept()

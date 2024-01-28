@@ -1,5 +1,9 @@
 import mysql.connector
-
+from requests_html import HTMLSession
+import requests 
+import threading
+from bs4 import BeautifulSoup 
+from urllib.request import urlopen
 
 
 host="localhost"
@@ -55,3 +59,18 @@ def SendMessage(sender_name,message):
     conn.commit()
     cursor.close()
     conn.close()
+
+def GetNews():
+    url = "https://www.deccanherald.com/tags/coimbatore"
+    news_list = []
+    response = requests.get(url)
+    if response.status_code == 200:
+        soup = BeautifulSoup(response.content,'html.parser')
+        news_divs = soup.find_all('div', class_='-bdFE')
+        for div in news_divs:
+            news_text = div.find('h1').text.strip()
+            news_url = div.find('a')['href']
+            image = div.find('img')['data-src']
+            date = div.find('div',class_='story-date IWO4Q').text
+            news_list.append([news_text,news_url,image,date])
+    return news_list
